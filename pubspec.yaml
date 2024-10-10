@@ -7,8 +7,10 @@ environment:
   sdk: ^3.5.1
 
 dependencies:
+  appinio_swiper: ^2.1.1
   flutter:
     sdk: flutter
+  http: ^1.2.2
   running_text: ^0.1.2
   telegram_web_app: ^0.2.0
 

@@ -156,7 +156,7 @@ class _PollPageState extends State<PollPage> {
                                           context: context,
                                           builder: (context) => AlertDialog(
                                                 title: const Text(
-                                                    "спасибо за прохождение опроса!"),
+                                                    "Спасибо за прохождение опроса!"),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: () => Navigator
@@ -167,12 +167,12 @@ class _PollPageState extends State<PollPage> {
                                                                       (context) =>
                                                                           const MainPage()),
                                                               (r) => false),
-                                                      child: const Text("ok"))
+                                                      child: const Text("ОК"))
                                                 ],
                                               ));
                                     }
                                   : null,
-                              child: const Text("otpravit"))),
+                              child: const Text("Отправить!"))),
                     ],
                   )
           ],

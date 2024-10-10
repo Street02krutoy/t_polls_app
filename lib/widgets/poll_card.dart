@@ -34,7 +34,9 @@ class PollCardWidget extends StatelessWidget {
                               title: const Text("Описание"),
                               content: Text(poll.desc),
                               actions: [
-                                TextButton(onPressed: () {}, child: Text("OK"))
+                                TextButton(onPressed: () {
+                                  Navigator.of(context).pop();
+                                }, child: Text("OK"))
                               ],
                             );
                           });

@@ -5,7 +5,9 @@ import 'package:t_polls_app/widgets/custom_card.dart';
 import 'package:t_polls_app/widgets/profile_button.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, required this.refreshParent});
+
+  final Function refreshParent;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -16,7 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: const Text("Профиль"),
       ),
       body: Column(
         children: [
@@ -41,8 +43,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Expanded(
                 child: CustomCard(
                   title: Text(
-                    "profile.rating",
+                    "Опросов пройдено:",
                     style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
                   ),
                   content: Text(
                     "52",
@@ -69,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icons.settings,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SettingsPage()));
+                    builder: (context) => SettingsPage(refreshParent: widget.refreshParent,)));
               },
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/main.dart';
+import 'package:t_polls_app/pages/list_page.dart';
 import 'package:t_polls_app/pages/profile_page.dart';
-import 'package:t_polls_app/types/poll.dart';
+import 'package:t_polls_app/pages/swipe_page.dart';
 import 'package:t_polls_app/widgets/poll_card.dart';
 
 class MainPage extends StatefulWidget {
@@ -11,19 +13,24 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: Icon(
-                size: 25,
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProfilePage(refreshParent: refresh,)));
+              },
+              icon: const Icon(
                 Icons.account_circle,
-                color: Theme.of(context).primaryColor,
+                size: 35,
               ),
             ),
             Padding(
@@ -32,36 +39,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             )
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ProfilePage()));
-            },
-            icon: const Icon(Icons.account_circle),
-          )
-        ],
       ),
-      body: SingleChildScrollView(
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemBuilder: (context, index) => PollCardWidget(
-            poll: Poll(
-                name: "Чайник электрический Поларис",
-                desc: "чайник просто во !",
-                questions: {
-                  "Удобство использования": null,
-                  "Скорость закипания воды": null,
-                  "Дизайн": null,
-                },
-                finalQuestion: 'Вас в целом устраивает работа чайника?'),
-          ),
-          itemCount: 10,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-        ),
-      ),
+      body: MainApp.swipeMode.value ? const SwipePage() : const ListPage(),
     );
   }
 }

@@ -30,6 +30,9 @@ class MainApp extends StatelessWidget {
   static final ValueNotifier<ThemeMode> notifier =
       ValueNotifier(ThemeMode.light);
 
+  static final ValueNotifier<bool> swipeMode =
+  ValueNotifier(true);
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
