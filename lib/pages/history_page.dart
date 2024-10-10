@@ -22,6 +22,7 @@ class _HistoryPageState extends State<HistoryPage> {
           shrinkWrap: true,
           itemBuilder: (context, index) => HistoryCard(
             poll: Poll(
+                id: 12223,
                 name: "Чайник электрический Поларис",
                 desc: "чайник просто во !",
                 questions: {

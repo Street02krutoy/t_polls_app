@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/main.dart';
 import 'package:t_polls_app/pages/list_page.dart';
 import 'package:t_polls_app/pages/profile_page.dart';
@@ -39,7 +40,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               ),
             ),
             // Text("User"),
-            Text(TelegramWebApp.instance.initData.user.firstname ?? "User"),
+            InkWell(
+              onTap: () async {},
+              child: Text(
+                  TelegramWebApp.instance.initData.user.firstname ?? "User"),
+            ),
           ],
         ),
       ),

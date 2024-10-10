@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
+import "package:t_polls_app/api/api_service.dart";
 import "../types/poll.dart";
 import "../widgets/poll_card.dart";
-
 
 class ListPage extends StatefulWidget {
   const ListPage({super.key});
@@ -11,27 +11,43 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
+  Future? polls;
+
+  void fetch() async {
+    polls = ApiService.service.getPolls();
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetch();
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) => PollCardWidget(
-          poll: Poll(
-              name: "Чайник электрический Поларис",
-              desc: "чайник просто во !",
-              questions: {
-                "Удобство использования": null,
-                "Скорость закипания воды": null,
-                "Дизайн": null,
-              },
-              finalQuestion: 'Вас в целом устраивает работа чайника?'),
-        ),
-        itemCount: 10,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2),
-      ),
+    fetch();
+    return FutureBuilder(
+      future: polls,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Poll> pollsList = snapshot.data;
+          return SingleChildScrollView(
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) => PollCardWidget(
+                poll: pollsList[index],
+              ),
+              itemCount: pollsList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+            ),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }

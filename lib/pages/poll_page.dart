@@ -23,7 +23,7 @@ class _PollPageState extends State<PollPage> {
   @override
   void initState() {
     super.initState();
-    _questionController = QuestionController(questions: widget.poll.questions);
+    _questionController = QuestionController(questions: widget.poll.questions!);
     widget.finalQuestion == null
         ? null
         : _questionController.setFinalQuestion(widget.finalQuestion!);
@@ -54,12 +54,12 @@ class _PollPageState extends State<PollPage> {
                         padding: const EdgeInsets.all(16.0),
                         child: QuestionCardWidget(
                           controller: _questionController,
-                          question: widget.poll.questions.keys.elementAt(index),
+                          question: widget.poll.questions!.keys.elementAt(index),
                           lock: widget.lock,
                         ),
                       ),
                     ),
-                itemCount: widget.poll.questions.length),
+                itemCount: widget.poll.questions!.length),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -69,7 +69,7 @@ class _PollPageState extends State<PollPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        widget.poll.finalQuestion,
+                        widget.poll.finalQuestion!,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.displayLarge,
                       ),

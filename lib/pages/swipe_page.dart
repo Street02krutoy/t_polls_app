@@ -11,6 +11,7 @@ class SwipePage extends StatefulWidget {
 
 class _SwipePageState extends State<SwipePage> {
   final Poll poll = Poll(
+      id: 18229,
       name: "Чайник электрический Поларис",
       desc: "чайник просто во !",
       questions: {
@@ -25,7 +26,7 @@ class _SwipePageState extends State<SwipePage> {
   @override
   Widget build(BuildContext context) {
     List<String> keys = [];
-    for (var a in poll.questions.keys) {
+    for (var a in poll.questions!.keys) {
       keys.add(a);
     }
 
@@ -55,7 +56,8 @@ class _SwipePageState extends State<SwipePage> {
               backgroundCardCount: 0,
               maxAngle: 5,
               threshold: 20,
-              swipeOptions: const SwipeOptions.only(up: true, right: true, left: true),
+              swipeOptions:
+                  const SwipeOptions.only(up: true, right: true, left: true),
               onSwipeEnd: (int previousIndex, int targetIndex,
                   SwiperActivity activity) {
                 if (previousIndex == targetIndex) return;
@@ -99,7 +101,9 @@ class _SwipePageState extends State<SwipePage> {
             size: 40,
             color: Colors.amberAccent,
           ),
-          const SizedBox(height: 30,),
+          const SizedBox(
+            height: 10,
+          ),
           const Icon(
             Icons.arrow_upward,
             size: 30,
@@ -133,7 +137,9 @@ class _SwipePageState extends State<SwipePage> {
               ),
             ],
           ),
-          const Spacer(flex: 1),
+          SizedBox(
+            height: 8,
+          )
         ],
       ),
     );
@@ -156,14 +162,12 @@ class _SwipeQuestionCardState extends State<SwipeQuestionCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Center(
-        child: Text(
-          widget.index == 3
-              ? widget.poll.finalQuestion
-              : widget.keys[widget.index],
-          style: const TextStyle(fontSize: 32),
-          textAlign: TextAlign.center,
-        ),
+      child: Text(
+        widget.index == 3
+            ? widget.poll.finalQuestion!
+            : widget.keys[widget.index],
+        style: const TextStyle(fontSize: 32),
+        textAlign: TextAlign.center,
       ),
     );
   }
