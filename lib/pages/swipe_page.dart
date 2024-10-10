@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:appinio_swiper/appinio_swiper.dart';
 import "package:t_polls_app/api/api_service.dart";
+import "package:t_polls_app/widgets/custom_appbar.dart";
 import "../types/poll.dart";
 import "main_page.dart";
 
@@ -29,63 +30,50 @@ class _SwipePageState extends State<SwipePage> {
       keys.add(a);
     }
 
-    return Center(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 10,
+    return Scaffold(
+      appBar: MyAppBar(text: widget.poll.name),
+      body: Center(
+        child: Column(
+          children: [
+            const Spacer(),
+            Expanded(
+              child: buildSwiper(widget.poll, keys),
             ),
-            child: Card(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                child: Text(
-                  widget.poll.name,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
+            const Spacer(),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 40,
                 ),
-              ),
+                Icon(
+                  Icons.arrow_back,
+                  size: 30,
+                ),
+                Text(
+                  "Свайпай!",
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                  size: 30,
+                ),
+                Icon(
+                  Icons.done,
+                  color: Colors.green,
+                  size: 40,
+                ),
+              ],
             ),
-          ),
-          const Spacer(),
-          Expanded(
-            child: buildSwiper(widget.poll, keys),
-          ),
-          const Spacer(),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(
-                Icons.close,
-                color: Colors.red,
-                size: 40,
-              ),
-              Icon(
-                Icons.arrow_back,
-                size: 30,
-              ),
-              Text(
-                "Свайпай!",
-                style: TextStyle(
-                  fontSize: 22,
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward,
-                size: 30,
-              ),
-              Icon(
-                Icons.done,
-                color: Colors.green,
-                size: 40,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 8,
-          )
-        ],
+            const SizedBox(
+              height: 8,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -97,8 +85,7 @@ class _SwipePageState extends State<SwipePage> {
         backgroundCardScale: 0.1,
         maxAngle: 0,
         threshold: 20,
-        swipeOptions:
-            const SwipeOptions.symmetric(horizontal: true),
+        swipeOptions: const SwipeOptions.symmetric(horizontal: true),
         onSwipeEnd:
             (int previousIndex, int targetIndex, SwiperActivity activity) {
           // print(targetIndex);
@@ -110,20 +97,27 @@ class _SwipePageState extends State<SwipePage> {
             marks.add(5);
           }
           if (targetIndex == keys.length + 1) {
-            ApiService.service.loadResult(widget.poll.id, Map.fromIterables(keys, List.generate(3, (index) => marks[index])), marks.last == 5).then((bool value) {
+            ApiService.service
+                .loadResult(
+                    widget.poll.id,
+                    Map.fromIterables(
+                        keys, List.generate(3, (index) => marks[index])),
+                    marks.last == 5)
+                .then((bool value) {
               showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text(value ? "Спасибо за прохождение опроса!" : "Не удалось загрузить ответ на сервер. Пожалуйста, попробуйте позже"),
+                  title: Text(value
+                      ? "Спасибо за прохождение опроса!"
+                      : "Не удалось загрузить ответ на сервер. Пожалуйста, попробуйте позже"),
                   actions: [
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushAndRemoveUntil(
+                          Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => const MainPage()),
-                                  (r) => false);
+                              (r) => false);
                           // initState();
                         },
                         child: const Text("ОК"))

@@ -76,6 +76,8 @@ class PollCardWidget extends StatelessWidget {
                   poll.name,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 4,
                 ),
               ),
               const Spacer(

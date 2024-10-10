@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:running_text/running_text.dart';
 import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/main_page.dart';
 import 'package:t_polls_app/types/poll.dart';
 import 'package:t_polls_app/widgets/question_card.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
+
+import '../widgets/custom_appbar.dart';
 
 class PollPage extends StatefulWidget {
   const PollPage(
@@ -102,20 +103,7 @@ class _PollPageState extends State<PollPage> {
       TelegramWebApp.instance.mainButton.enable();
     }
     return Scaffold(
-      appBar: AppBar(
-        title: widget.poll.name.length > 20
-            ? RunningTextView(
-                data: RunningTextModel(
-                  [widget.poll.name],
-                  textStyle: Theme.of(context).appBarTheme.titleTextStyle,
-                  softWrap: false,
-                  velocity: 50,
-                  direction: RunningTextDirection.rightToLeft,
-                  fadeSide: RunningTextFadeSide.both,
-                ),
-              )
-            : Text(widget.poll.name),
-      ),
+      appBar: MyAppBar(text: widget.poll.name),
       body: Center(
         child: Column(
           children: [
