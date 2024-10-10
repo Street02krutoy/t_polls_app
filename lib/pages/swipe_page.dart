@@ -4,163 +4,133 @@ import "package:t_polls_app/api/api_service.dart";
 import "../types/poll.dart";
 
 class SwipePage extends StatefulWidget {
-  const SwipePage({super.key});
+  const SwipePage({super.key, required this.poll});
+
+  final Poll poll;
 
   @override
   State<SwipePage> createState() => _SwipePageState();
 }
 
 class _SwipePageState extends State<SwipePage> {
-  Future? poll;
   List<int> marks = [];
 
-  void refresh([int previousId = -1]) {
-    setState(() {
-      poll = ApiService.service.getRandomPoll(previousId);
-    });
-  }
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   refresh();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: poll,
-      builder: (context, snapshot) {
-        print(snapshot);
-        if (snapshot.hasData) {
-          Poll myPoll = snapshot.data;
-          List<String> keys = [];
-          for (var a in myPoll.questions!.keys) {
-            keys.add(a);
-          }
+    List<String> keys = [];
+    for (var a in widget.poll.questions!.keys) {
+      keys.add(a);
+    }
 
-          return Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                      child: Text(
-                        myPoll.name,
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Expanded(
-                  child: buildSwiper(myPoll, keys, poll),
-                ),
-                const Spacer(),
-                const Icon(
-                  Icons.loop,
-                  size: 40,
-                  color: Colors.amberAccent,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Icon(
-                  Icons.arrow_upward,
-                  size: 30,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(
-                      Icons.close,
-                      color: Colors.red,
-                      size: 40,
-                    ),
-                    Icon(
-                      Icons.arrow_back,
-                      size: 30,
-                    ),
-                    Text(
-                      "Свайпай!",
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 30,
-                    ),
-                    Icon(
-                      Icons.done,
-                      color: Colors.green,
-                      size: 40,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 8,
-                )
-              ],
+    return Center(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
             ),
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+            child: Card(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: Text(
+                  widget.poll.name,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          const Spacer(),
+          Expanded(
+            child: buildSwiper(widget.poll, keys),
+          ),
+          const Spacer(),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.close,
+                color: Colors.red,
+                size: 40,
+              ),
+              Icon(
+                Icons.arrow_back,
+                size: 30,
+              ),
+              Text(
+                "Свайпай!",
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward,
+                size: 30,
+              ),
+              Icon(
+                Icons.done,
+                color: Colors.green,
+                size: 40,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          )
+        ],
+      ),
     );
   }
 
   AppinioSwiper buildSwiper(Poll p, List<String> keys, [args]) {
     return AppinioSwiper(
-        cardCount: 4,
+        cardCount: keys.length + 1,
         backgroundCardCount: 0,
         backgroundCardScale: 0.1,
         maxAngle: 0,
         threshold: 20,
         swipeOptions:
-            const SwipeOptions.only(up: true, right: true, left: true),
+            const SwipeOptions.symmetric(horizontal: true),
         onSwipeEnd:
             (int previousIndex, int targetIndex, SwiperActivity activity) {
           // print(targetIndex);
           if (previousIndex == targetIndex) return;
           if (activity.direction == AxisDirection.left) {
-            // 1 star or no
+            marks.add(1);
           }
           if (activity.direction == AxisDirection.right) {
-            // 5 star or yes
+            marks.add(5);
           }
-          if (activity.direction == AxisDirection.up) {
-            // skip
-          }
-          if (targetIndex == 4) {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text("Спасибо за прохождение опроса!"),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        refresh(p.id);
-                        Navigator.of(context).pop();
-                        // initState();
-                      },
-                      child: const Text("ОК"))
-                ],
-              ),
-            );
+          if (targetIndex == keys.length + 1) {
+            ApiService.service.loadResult(widget.poll.id, Map.fromIterables(keys, List.generate(3, (index) => marks[index])), marks.last == 5).then((bool value) {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(value ? "Спасибо за прохождение опроса!" : "Не удалось загрузить ответ на сервер. Пожалуйста, попробуйте позже"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          // initState();
+                        },
+                        child: const Text("ОК"))
+                  ],
+                ),
+              );
+            });
           }
         },
         cardBuilder: (BuildContext context, int index) {
-          print("-----: $index");
+          // print("-----: $index");
           return SwipeQuestionCard(
             index: index,
             poll: p,
@@ -186,12 +156,10 @@ class _SwipeQuestionCardState extends State<SwipeQuestionCard> {
   @override
   Widget build(BuildContext context) {
     var i = widget.index;
-    print("++++: $i");
+    // print("++++: $i");
     return Card(
       child: Text(
-        widget.index == 3
-            ? widget.poll.finalQuestion!
-            : widget.keys[i],
+        widget.index == 3 ? widget.poll.finalQuestion! : widget.keys[i],
         style: const TextStyle(fontSize: 32),
         textAlign: TextAlign.center,
       ),

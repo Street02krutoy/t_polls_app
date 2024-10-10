@@ -48,7 +48,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: MainApp.swipeMode.value ? const SwipePage() : const ListPage(),
+      body: const ListPage(),
     );
   }
 }

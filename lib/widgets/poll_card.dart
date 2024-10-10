@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:t_polls_app/api/api_service.dart';
+import 'package:t_polls_app/main.dart';
 import 'package:t_polls_app/pages/poll_page.dart';
+import 'package:t_polls_app/pages/swipe_page.dart';
 import 'package:t_polls_app/types/poll.dart';
 
 class PollCardWidget extends StatelessWidget {
@@ -12,16 +14,23 @@ class PollCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ApiService.service.getPoll(poll.id).then((value) {
-          if (value == null) return;
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PollPage(
-              poll: value,
-              lock: false,
-            ),
-          ),
-        );},);
+        ApiService.service.getPoll(poll.id).then(
+          (value) {
+            if (value == null) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MainApp.swipeMode.value
+                    ? SwipePage(
+                        poll: value,
+                      )
+                    : PollPage(
+                        poll: value,
+                        lock: false,
+                      ),
+              ),
+            );
+          },
+        );
       },
       child: Card(
         child: Padding(
