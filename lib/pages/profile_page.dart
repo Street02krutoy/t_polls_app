@@ -28,14 +28,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: CustomCard(
                   title: ClipOval(
                     child: CircleAvatar(
-                      child: Image.network(
-                          "https://klike.net/uploads/posts/2020-04/1586332729_34.jpg"),
                       radius: 60,
                       backgroundColor: Theme.of(context).canvasColor,
+                      child: const Icon(
+                        Icons.account_circle_outlined,
+                        size: 120,
+                      ),
                     ),
                   ),
-                  content: Text(
-                    "error",
+                  content: const Text(
+                    "User",
                     textScaler: TextScaler.linear(2),
                   ),
                 ),
@@ -72,7 +74,9 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icons.settings,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SettingsPage(refreshParent: widget.refreshParent,)));
+                    builder: (context) => SettingsPage(
+                          refreshParent: widget.refreshParent,
+                        )));
               },
             ),
           ),
