@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             // Text("User"),
             InkWell(
-              onTap: () async {},
+              onTap: null,
               child: Text(
                   TelegramWebApp.instance.initData.user.firstname ?? "User"),
             ),

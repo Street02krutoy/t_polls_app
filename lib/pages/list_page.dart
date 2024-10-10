@@ -26,9 +26,11 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     fetch();
+    print("AAAA");
     return FutureBuilder(
       future: polls,
       builder: (context, snapshot) {
+        print(snapshot);
         if (snapshot.hasData) {
           List<Poll> pollsList = snapshot.data;
           return SingleChildScrollView(

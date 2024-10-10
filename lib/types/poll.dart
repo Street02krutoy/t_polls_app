@@ -16,20 +16,19 @@ class Poll {
   });
 
   factory Poll.fromJson(Map json) {
-    Map<String, int?> questions = {};
-    for (String a in json["criteria"].keys) {
-      questions[a] = null;
+    Map<String, int?> q = {};
+    for (Map a in json["criteria"] ?? []) {
+      q[a["name"]] = null;
     }
 
-    if (questions.isNotEmpty) {
+    if (q.isNotEmpty) {
       return Poll(
-          id: json["poll_id"],
+          id: json["id"],
           name: json["name"],
           desc: json["description"],
           finalQuestion: json["question"],
-          questions: questions);
+          questions: q);
     }
-    return Poll(
-        id: json["poll_id"], name: json["name"], desc: json["description"]);
+    return Poll(id: json["id"], name: json["name"], desc: json["description"]);
   }
 }

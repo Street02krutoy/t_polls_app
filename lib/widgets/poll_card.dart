@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/poll_page.dart';
 import 'package:t_polls_app/types/poll.dart';
 
@@ -11,11 +12,16 @@ class PollCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
+        ApiService.service.getPoll(poll.id).then((value) {
+          if (value == null) return;
+        Navigator.of(context).push(
+          MaterialPageRoute(
             builder: (context) => PollPage(
-                  poll: poll,
-                  lock: false,
-                )));
+              poll: value,
+              lock: false,
+            ),
+          ),
+        );},);
       },
       child: Card(
         child: Padding(
@@ -34,9 +40,11 @@ class PollCardWidget extends StatelessWidget {
                               title: const Text("Описание"),
                               content: Text(poll.desc),
                               actions: [
-                                TextButton(onPressed: () {
-                                  Navigator.of(context).pop();
-                                }, child: Text("OK"))
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("OK"))
                               ],
                             );
                           });

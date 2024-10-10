@@ -3,37 +3,51 @@ import "dart:convert";
 import "package:t_polls_app/types/poll.dart";
 import "package:telegram_web_app/telegram_web_app.dart";
 
-
 class ApiService {
   String serverURL = "http://192.168.84.29:5000";
   static final ApiService service = ApiService();
 
-  Future<Map<String, bool>> getSettings() async {
-    http.Response baseInfoResponse =
-    await http.get(Uri.parse("$serverURL/api/user/settings?user_id=${TelegramWebApp.instance.initData.user.id}"));
+  Future<Map<String, bool>?> getSettings() async {
+    http.Response baseInfoResponse = await http.get(Uri.parse(
+        "$serverURL/api/user/settings?user_id=${TelegramWebApp.instance.initData.user.id}"));
     Map<String, bool> baseInfoJson = jsonDecode(baseInfoResponse.body);
     return baseInfoJson;
   }
 
-  Future<List<Poll>> getPolls() async {
-    print("AAAA");
-    http.Response baseInfoResponse =
-        await http.get(Uri.parse("$serverURL/api/user/polls?user_id=${TelegramWebApp.instance.initData.user.id}"));
+  Future<List<Poll>?> getPolls() async {
+    http.Response baseInfoResponse = await http.get(Uri.parse(
+        "$serverURL/api/user/polls?id=${TelegramWebApp.instance.initData.user.id}"));
     List baseInfoJson = jsonDecode(baseInfoResponse.body);
-    return List.generate(
+    List<Poll> a = List.generate(
         baseInfoJson.length, (index) => Poll.fromJson(baseInfoJson[index]));
+    return a;
   }
 
-  Future<bool> loadResult(int poll_id) async {
+  Future<Poll?> getPoll(int id) async {
+    http.Response baseInfoResponse =
+        await http.get(Uri.parse("$serverURL/api/user/poll?id=$id"));
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    print(baseInfoJson);
+    var a = Poll.fromJson(baseInfoJson);
+    print(a);
+    return a;
+  }
+
+  Future<bool> loadResult(int pollId, Map<String, int?> questions) async {
+    List<String> keys = questions.keys.toList();
     Map body = {
       "user_id": TelegramWebApp.instance.initData.user.id.toString(),
-      "poll_id": poll_id,
-
+      "poll_id": pollId,
+      "criterion_1": "${keys[0]},${questions[keys[0]]}",
+      "criterion_2": "${keys[1]},${questions[keys[1]]}",
+      "criterion_3": "${keys[2]},${questions[keys[2]]}"
     };
 
     http.Response baseInfoResponse = await http.post(
-        Uri.parse("$serverURL/api/user/poll"),
-        body: body,);
+      Uri.parse("$serverURL/api/user/poll"),
+      body: body,
+    );
     return baseInfoResponse.statusCode == 200;
   }
 
