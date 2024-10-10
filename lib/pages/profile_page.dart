@@ -5,6 +5,8 @@ import 'package:t_polls_app/widgets/custom_card.dart';
 import 'package:t_polls_app/widgets/profile_button.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 
+import '../api/api_service.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.refreshParent});
 
@@ -15,8 +17,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Future? count;
+
+  void fetch() {
+    count = ApiService.service.getCompletedCount();
+  }
+
   @override
   Widget build(BuildContext context) {
+    fetch();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Профиль"),
@@ -50,10 +59,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
-                  content: Text(
-                    "52",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  content: FutureBuilder(
+                      future: count,
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.hasData ? snapshot.data.toString() : "-",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        );
+                      }),
                   height: 160,
                 ),
               )

@@ -23,6 +23,15 @@ class ApiService {
     return a;
   }
 
+  Future<List<Poll>?> getHistories() async {
+    http.Response baseInfoResponse = await http.get(Uri.parse(
+        "$serverURL/api/user/histories?id=${TelegramWebApp.instance.initData.user.id}"));
+    List baseInfoJson = jsonDecode(baseInfoResponse.body);
+    List<Poll> a = List.generate(
+        baseInfoJson.length, (index) => Poll.fromJson(baseInfoJson[index]));
+    return a;
+  }
+
   Future<Poll?> getPoll(int id) async {
     http.Response baseInfoResponse =
         await http.get(Uri.parse("$serverURL/api/user/poll?id=$id"));
@@ -32,6 +41,15 @@ class ApiService {
     var a = Poll.fromJson(baseInfoJson);
     print(a);
     return a;
+  }
+
+  Future<Map?> getHistory(int id) async {
+    http.Response baseInfoResponse =
+    await http.get(Uri.parse("$serverURL/api/user/history?poll_id=$id&user_id=${TelegramWebApp.instance.initData.user.id}"));
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    print(baseInfoJson);
+    return baseInfoJson;
   }
 
   Future<Poll?> getRandomPoll(int previousId) async {
@@ -63,6 +81,14 @@ class ApiService {
       body: jsonEncode(body),
     );
     return baseInfoResponse.statusCode == 200;
+  }
+
+  Future<int?> getCompletedCount() async {
+    http.Response baseInfoResponse =
+    await http.get(Uri.parse("$serverURL/api/user/profile?&id=${TelegramWebApp.instance.initData.user.id}"));
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    return baseInfoJson["polls_amount"];
   }
 
 

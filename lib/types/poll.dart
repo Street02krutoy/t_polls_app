@@ -31,4 +31,18 @@ class Poll {
     }
     return Poll(id: json["id"], name: json["name"], desc: json["description"]);
   }
+
+  Poll copyWith(Map data) {
+    return Poll(
+        id: id,
+        name: name,
+        desc: desc,
+        type: type,
+        questions: {
+          data["criterion_name_1"]: data["criterion_rating_1"],
+          data["criterion_name_2"]: data["criterion_rating_2"],
+          data["criterion_name_3"]: data["criterion_rating_3"],
+        },
+        finalQuestion: data["question"]);
+  }
 }
