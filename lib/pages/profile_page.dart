@@ -3,6 +3,7 @@ import 'package:t_polls_app/pages/history_page.dart';
 import 'package:t_polls_app/pages/settings_page.dart';
 import 'package:t_polls_app/widgets/custom_card.dart';
 import 'package:t_polls_app/widgets/profile_button.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.refreshParent});
@@ -36,9 +37,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  content: const Text(
-                    "User",
-                    textScaler: TextScaler.linear(2),
+                  content: Text(
+                    TelegramWebApp.instance.initData.user.firstname ?? "User",
+                    textScaler: const TextScaler.linear(2),
                   ),
                 ),
               ),
