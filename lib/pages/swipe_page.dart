@@ -1,8 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:appinio_swiper/appinio_swiper.dart';
-import "package:running_text/running_text.dart";
 import "../types/poll.dart";
-import "../widgets/poll_card.dart";
 
 class SwipePage extends StatefulWidget {
   const SwipePage({super.key});
@@ -55,7 +53,9 @@ class _SwipePageState extends State<SwipePage> {
             child: AppinioSwiper(
               cardCount: 4,
               backgroundCardCount: 0,
-              swipeOptions: const SwipeOptions.symmetric(horizontal: true),
+              maxAngle: 5,
+              threshold: 20,
+              swipeOptions: const SwipeOptions.only(up: true, right: true, left: true),
               onSwipeEnd: (int previousIndex, int targetIndex,
                   SwiperActivity activity) {
                 if (previousIndex == targetIndex) return;
@@ -64,6 +64,9 @@ class _SwipePageState extends State<SwipePage> {
                 }
                 if (activity.direction == AxisDirection.right) {
                   // 5 star or yes
+                }
+                if (activity.direction == AxisDirection.up) {
+                  // skip
                 }
                 if (targetIndex == 4) {
                   showDialog(
@@ -90,7 +93,17 @@ class _SwipePageState extends State<SwipePage> {
               ),
             ),
           ),
+          const Spacer(),
+          const Icon(
+            Icons.loop,
+            size: 40,
+            color: Colors.amberAccent,
+          ),
           const SizedBox(height: 30,),
+          const Icon(
+            Icons.arrow_upward,
+            size: 30,
+          ),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
