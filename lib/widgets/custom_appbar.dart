@@ -13,11 +13,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? RunningTextView(
               data: RunningTextModel(
                 [text],
-                textStyle: Theme.of(context).appBarTheme.titleTextStyle,
-                softWrap: true,
+                softWrap: false,
                 velocity: 50,
                 direction: RunningTextDirection.rightToLeft,
                 fadeSide: RunningTextFadeSide.both,
+                textStyle: const TextStyle(
+                    fontSize: 18, overflow: TextOverflow.visible),
               ),
             )
           : Text(text),

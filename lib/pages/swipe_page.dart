@@ -32,47 +32,48 @@ class _SwipePageState extends State<SwipePage> {
 
     return Scaffold(
       appBar: MyAppBar(text: widget.poll.name),
-      body: Center(
-        child: Column(
-          children: [
-            const Spacer(),
-            Expanded(
-              child: buildSwiper(widget.poll, keys),
-            ),
-            const Spacer(),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Icon(
-                  Icons.close,
-                  color: Colors.red,
-                  size: 40,
-                ),
-                Icon(
-                  Icons.arrow_back,
-                  size: 30,
-                ),
-                Text(
-                  "Свайпай!",
-                  style: TextStyle(
-                    fontSize: 22,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Center(
+          child: Column(
+            children: [
+              Expanded(
+                child: buildSwiper(widget.poll, keys),
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: 40,
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward,
-                  size: 30,
-                ),
-                Icon(
-                  Icons.done,
-                  color: Colors.green,
-                  size: 40,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            )
-          ],
+                  Icon(
+                    Icons.arrow_back,
+                    size: 30,
+                  ),
+                  Text(
+                    "Свайпай!",
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 30,
+                  ),
+                  Icon(
+                    Icons.done,
+                    color: Colors.green,
+                    size: 40,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 8,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -155,10 +156,15 @@ class _SwipeQuestionCardState extends State<SwipeQuestionCard> {
   Widget build(BuildContext context) {
     var i = widget.index;
     // print("++++: $i");
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).cardColor,
+      ),
+      alignment: Alignment.center,
       child: Text(
         widget.index == 3 ? widget.poll.finalQuestion! : widget.keys[i],
-        style: const TextStyle(fontSize: 32),
+        style: const TextStyle(fontSize: 40),
         textAlign: TextAlign.center,
       ),
     );

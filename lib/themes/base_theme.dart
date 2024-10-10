@@ -9,7 +9,7 @@ abstract class BaseTheme {
   Brightness get brightness;
   ThemeData get themeData => ThemeData(
       primaryColor: primaryContent,
-      cardColor: secondaryColor,
+      cardColor: cardColor,
       textTheme: TextTheme(
           displayMedium: TextStyle(color: primaryContent),
           displayLarge: TextStyle(color: primaryContent, fontSize: 17.5)),
