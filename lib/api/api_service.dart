@@ -4,7 +4,7 @@ import "package:t_polls_app/types/poll.dart";
 import "package:telegram_web_app/telegram_web_app.dart";
 
 class ApiService {
-  String serverURL = "http://192.168.84.29:5000";
+  String serverURL = "http://192.168.116.29:5000";
   static final ApiService service = ApiService();
 
   Future<Map<String, bool>?> getSettings() async {
@@ -34,19 +34,33 @@ class ApiService {
     return a;
   }
 
-  Future<bool> loadResult(int pollId, Map<String, int?> questions) async {
+  Future<Poll?> getRandomPoll(int previousId) async {
+    http.Response baseInfoResponse =
+    await http.get(Uri.parse("$serverURL/api/user/swipe?poll_id=$previousId&user_id=${TelegramWebApp.instance.initData.user.id}"));
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    print(baseInfoJson);
+    var a = Poll.fromJson(baseInfoJson);
+    print(a);
+    return a;
+  }
+
+  Future<bool> loadResult(int pollId, Map<String, int?> questions, bool finalQuestion) async {
     List<String> keys = questions.keys.toList();
     Map body = {
       "user_id": TelegramWebApp.instance.initData.user.id.toString(),
-      "poll_id": pollId,
+      "poll_id": pollId.toString(),
       "criterion_1": "${keys[0]},${questions[keys[0]]}",
       "criterion_2": "${keys[1]},${questions[keys[1]]}",
-      "criterion_3": "${keys[2]},${questions[keys[2]]}"
+      "criterion_3": "${keys[2]},${questions[keys[2]]}",
+      "special": finalQuestion
     };
 
+    print(body);
     http.Response baseInfoResponse = await http.post(
       Uri.parse("$serverURL/api/user/poll"),
-      body: body,
+      headers: {"Content-Type":"application/json"},
+      body: jsonEncode(body),
     );
     return baseInfoResponse.statusCode == 200;
   }

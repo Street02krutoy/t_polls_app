@@ -31,7 +31,7 @@ class MainApp extends StatelessWidget {
       ValueNotifier(ThemeMode.light);
 
   static final ValueNotifier<bool> swipeMode =
-  ValueNotifier(false);
+  ValueNotifier(true);
 
   @override
   Widget build(BuildContext context) {

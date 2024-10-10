@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:running_text/running_text.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/main_page.dart';
 import 'package:t_polls_app/types/poll.dart';
 import 'package:t_polls_app/widgets/question_card.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 class PollPage extends StatefulWidget {
   const PollPage(
@@ -20,6 +22,51 @@ class PollPage extends StatefulWidget {
 class _PollPageState extends State<PollPage> {
   late final QuestionController _questionController;
 
+  void onButtonPress() {
+    if(!_questionController.answered) return;
+    Future<bool> res = ApiService.service.loadResult(
+        widget.poll.id,
+        _questionController.questions,
+        _questionController.finalQuestion ?? false);
+    TelegramWebApp.instance.mainButton.hide();
+
+    res.then((bool val) {
+      return val
+          ? showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text("Спасибо за прохождение опроса!"),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.of(context)
+                              .pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainPage()),
+                                  (r) => false),
+                          child: const Text("ОК"))
+                    ],
+                  ))
+          : showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text("Что-то пошло не так..."),
+                    content:
+                        const Text("Попробуйте снова через несколько минут"),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.of(context)
+                              .pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainPage()),
+                                  (r) => false),
+                          child: const Text("ОК"))
+                    ],
+                  ));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,10 +74,23 @@ class _PollPageState extends State<PollPage> {
     widget.finalQuestion == null
         ? null
         : _questionController.setFinalQuestion(widget.finalQuestion!);
+    if (widget.lock == true) return;
+    TelegramWebApp.instance.mainButton.onClick(onButtonPress);
+    TelegramWebApp.instance.mainButton.disable();
+    TelegramWebApp.instance.mainButton.show();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.lock == true) return;
+    TelegramWebApp.instance.mainButton.offClick(onButtonPress);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_questionController.answered)
+      TelegramWebApp.instance.mainButton.enable();
     return Scaffold(
       appBar: AppBar(
         title: RunningTextView(
@@ -54,7 +114,8 @@ class _PollPageState extends State<PollPage> {
                         padding: const EdgeInsets.all(16.0),
                         child: QuestionCardWidget(
                           controller: _questionController,
-                          question: widget.poll.questions!.keys.elementAt(index),
+                          question:
+                              widget.poll.questions!.keys.elementAt(index),
                           lock: widget.lock,
                         ),
                       ),
@@ -141,40 +202,6 @@ class _PollPageState extends State<PollPage> {
                 ),
               ),
             ),
-            const Spacer(),
-            widget.lock == true
-                ? const Row()
-                : Row(
-                    children: [
-                      Expanded(
-                          child: ElevatedButton(
-                              onPressed: _questionController.answered
-                                  ? () {
-                                      print(_questionController);
-                                      showDialog(
-                                          barrierDismissible: false,
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                title: const Text(
-                                                    "Спасибо за прохождение опроса!"),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () => Navigator
-                                                              .of(context)
-                                                          .pushAndRemoveUntil(
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const MainPage()),
-                                                              (r) => false),
-                                                      child: const Text("ОК"))
-                                                ],
-                                              ));
-                                    }
-                                  : null,
-                              child: const Text("Отправить!"))),
-                    ],
-                  )
           ],
         ),
       ),
