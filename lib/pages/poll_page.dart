@@ -23,7 +23,7 @@ class _PollPageState extends State<PollPage> {
   late final QuestionController _questionController;
 
   void onButtonPress() {
-    if(!_questionController.answered) return;
+    if (!_questionController.answered) return;
     Future<bool> res = ApiService.service.loadResult(
         widget.poll.id,
         _questionController.questions,
@@ -75,33 +75,46 @@ class _PollPageState extends State<PollPage> {
         ? null
         : _questionController.setFinalQuestion(widget.finalQuestion!);
     if (widget.lock == true) return;
-    TelegramWebApp.instance.mainButton.onClick(onButtonPress);
-    TelegramWebApp.instance.mainButton.disable();
-    TelegramWebApp.instance.mainButton.show();
+    TelegramWebApp.instance.mainButton
+      ..onClick(onButtonPress)
+      ..setParams(BottomButtonParams(
+        text: "Ответить",
+        color: const Color.fromARGB(255, 71, 167, 247).hexString,
+        textColor: '',
+        hasShineEffect: true,
+        position: '',
+      ))
+      ..disable()
+      ..show();
   }
 
   @override
   void dispose() {
-    super.dispose();
     if (widget.lock == true) return;
+    TelegramWebApp.instance.mainButton.hide();
     TelegramWebApp.instance.mainButton.offClick(onButtonPress);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_questionController.answered)
+    if (_questionController.answered) {
       TelegramWebApp.instance.mainButton.enable();
+    }
     return Scaffold(
       appBar: AppBar(
-        title: RunningTextView(
-            data: RunningTextModel(
-          [widget.poll.name],
-          textStyle: Theme.of(context).appBarTheme.titleTextStyle,
-          softWrap: false,
-          velocity: 50,
-          direction: RunningTextDirection.rightToLeft,
-          fadeSide: RunningTextFadeSide.both,
-        )),
+        title: widget.poll.name.length > 20
+            ? RunningTextView(
+                data: RunningTextModel(
+                  [widget.poll.name],
+                  textStyle: Theme.of(context).appBarTheme.titleTextStyle,
+                  softWrap: false,
+                  velocity: 50,
+                  direction: RunningTextDirection.rightToLeft,
+                  fadeSide: RunningTextFadeSide.both,
+                ),
+              )
+            : Text(widget.poll.name),
       ),
       body: Center(
         child: Column(

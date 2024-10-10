@@ -15,7 +15,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Future? polls;
 
   void fetch() async {
-    polls = ApiService.service.getPolls();
+    polls = ApiService.service.getHistories();
   }
 
   @override

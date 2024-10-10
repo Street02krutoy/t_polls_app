@@ -54,19 +54,26 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Expanded(
                 child: CustomCard(
-                  title: Text(
+                  title: const Text(
                     "Опросов пройдено:",
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  content: FutureBuilder(
-                      future: count,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.hasData ? snapshot.data.toString() : "-",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        );
-                      }),
+                  content: Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: FutureBuilder(
+                        future: count,
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.hasData ? snapshot.data.toString() : "-",
+                            style: const TextStyle(
+                              fontSize: 24,
+                            ),
+                          );
+                        }),
+                  ),
                   height: 160,
                 ),
               )
@@ -74,7 +81,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("История"),
+              title: const Text(
+                "История",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.history,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -84,7 +96,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("Настройки"),
+              title: const Text(
+                "Настройки",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.settings,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -96,7 +113,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("Тех. поддержка"),
+              title: const Text(
+                "Тех. поддержка",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.support,
               onTap: () {},
             ),

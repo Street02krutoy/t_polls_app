@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:appinio_swiper/appinio_swiper.dart';
 import "package:t_polls_app/api/api_service.dart";
 import "../types/poll.dart";
+import "main_page.dart";
 
 class SwipePage extends StatefulWidget {
   const SwipePage({super.key, required this.poll});
@@ -118,8 +119,11 @@ class _SwipePageState extends State<SwipePage> {
                   actions: [
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => const MainPage()),
+                                  (r) => false);
                           // initState();
                         },
                         child: const Text("ОК"))
