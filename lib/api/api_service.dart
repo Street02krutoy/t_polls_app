@@ -7,11 +7,28 @@ class ApiService {
   String serverURL = "http://192.168.116.29:5000";
   static final ApiService service = ApiService();
 
-  Future<Map<String, bool>?> getSettings() async {
+  Future<Map?> getSettings() async {
     http.Response baseInfoResponse = await http.get(Uri.parse(
-        "$serverURL/api/user/settings?user_id=${TelegramWebApp.instance.initData.user.id}"));
-    Map<String, bool> baseInfoJson = jsonDecode(baseInfoResponse.body);
+        "$serverURL/api/user/settings?id=${TelegramWebApp.instance.initData.user.id}"));
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    print(baseInfoJson);
     return baseInfoJson;
+  }
+
+  Future setSettings(bool lightTheme, bool swipeMode) async {
+    Map body = {
+      "id": TelegramWebApp.instance.initData.user.id.toString(),
+      "light_theme": lightTheme,
+      "swipe_mode": swipeMode
+    };
+
+    print(body);
+    http.Response baseInfoResponse = await http.put(
+      Uri.parse("$serverURL/api/user/settings"),
+      headers: {"Content-Type":"application/json"},
+      body: jsonEncode(body),
+    );
+    return baseInfoResponse.statusCode == 200;
   }
 
   Future<List<Poll>?> getPolls() async {
