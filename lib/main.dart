@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
   }
 
   static final ValueNotifier<ThemeMode> notifier =
-      ValueNotifier(ThemeMode.light);
+      ValueNotifier(ThemeMode.dark);
 
   static final ValueNotifier<bool> swipeMode = ValueNotifier(false);
 
