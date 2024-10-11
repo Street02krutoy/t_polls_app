@@ -5,7 +5,7 @@ import "package:t_polls_app/types/poll.dart";
 import "package:telegram_web_app/telegram_web_app.dart";
 
 class ApiService {
-  String serverURL = "http://192.168.84.29:5000";
+  String serverURL = "https://api.penki.tech/";
   static final ApiService service = ApiService();
 
   Future<Map<String, bool>> getSettings() async {
