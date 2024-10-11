@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/poll_page.dart';
+import 'package:t_polls_app/types/exceptions.dart';
 import 'package:t_polls_app/types/poll.dart';
+import 'package:t_polls_app/widgets/exception_dialog.dart';
 
 class HistoryCard extends StatelessWidget {
-  const HistoryCard(
-      {super.key, required this.poll, required this.finalQuestion});
+  const HistoryCard({super.key, required this.poll});
 
   final Poll poll;
-  final bool finalQuestion;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PollPage(
-                  poll: poll,
-                  lock: true,
-                  finalQuestion: true,
-                )));
+        ApiService.service.getHistory(poll.id).then((value) {
+          if (value == null) return;
+          Poll newPoll = poll.copyWith(value);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PollPage(
+                poll: newPoll,
+                lock: true,
+                finalQuestion: value["answer"],
+              ),
+            ),
+          );
+        }).onError((APIError e, _) {
+          showDialog(
+              context: context, builder: (context) => ExceptionDialog(e: e));
+        });
       },
       child: Card(
         child: Padding(
@@ -37,9 +48,11 @@ class HistoryCard extends StatelessWidget {
                               title: const Text("Описание"),
                               content: Text(poll.desc),
                               actions: [
-                                TextButton(onPressed: () {
-                                  Navigator.of(context).pop();
-                                }, child: Text("OK"))
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Закрыть"))
                               ],
                             );
                           });
@@ -62,6 +75,8 @@ class HistoryCard extends StatelessWidget {
                   poll.name,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 4,
                 ),
               ),
               const Spacer(

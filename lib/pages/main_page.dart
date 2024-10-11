@@ -41,14 +41,14 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
             // Text("User"),
             InkWell(
-              onTap: () async {},
+              onTap: null,
               child: Text(
                   TelegramWebApp.instance.initData.user.firstname ?? "User"),
             ),
           ],
         ),
       ),
-      body: MainApp.swipeMode.value ? const SwipePage() : const ListPage(),
+      body: const ListPage(),
     );
   }
 }

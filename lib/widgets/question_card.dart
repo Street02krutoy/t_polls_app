@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:telegram_web_app/telegram_web_app.dart';
 
 class QuestionCardWidget extends StatefulWidget {
   const QuestionCardWidget(
       {super.key, required this.controller, required this.question, this.lock});
+
   final QuestionController controller;
   final String question;
   final bool? lock;
@@ -92,8 +94,10 @@ class QuestionController {
         break;
       }
     }
+    final bool res = a == true && finalQuestion != null;
 
-    return a == true && finalQuestion != null;
+    res ? TelegramWebApp.instance.mainButton.enable() : TelegramWebApp.instance.mainButton.disable();
+    return res;
   }
 
   void setFinalQuestion(bool val) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/main_page.dart';
 import 'package:t_polls_app/themes/dark_theme.dart';
 import 'package:t_polls_app/themes/light_theme.dart';
@@ -20,18 +21,28 @@ void main() {
   FlutterError.onError = (details) {
     print("Flutter error happened: $details");
   };
-
+  MainApp.fetchSettings();
   runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  static final ValueNotifier<ThemeMode> notifier =
-      ValueNotifier(ThemeMode.light);
+  static void fetchSettings() {
+    ApiService.service.getSettings().then((value) {
+      if (value == null) return;
+      bool? theme = value["light_theme"];
+      if (theme != null) {
+        MainApp.notifier.value = theme ? ThemeMode.light : ThemeMode.dark;
+      }
+      MainApp.swipeMode.value = value["swipe_mode"] ?? MainApp.swipeMode.value;
+    });
+  }
 
-  static final ValueNotifier<bool> swipeMode =
-  ValueNotifier(false);
+  static final ValueNotifier<ThemeMode> notifier =
+      ValueNotifier(ThemeMode.dark);
+
+  static final ValueNotifier<bool> swipeMode = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/main.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -76,5 +77,11 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    ApiService.service.setSettings(MainApp.notifier.value == ThemeMode.light, MainApp.swipeMode.value);
+    super.dispose();
   }
 }

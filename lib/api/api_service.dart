@@ -1,10 +1,11 @@
 import "package:http/http.dart" as http;
+import "package:t_polls_app/types/exceptions.dart";
 import "dart:convert";
 import "package:t_polls_app/types/poll.dart";
 import "package:telegram_web_app/telegram_web_app.dart";
 
 class ApiService {
-  String serverURL = "https://api.penki.tech";
+  String serverURL = "http://192.168.84.29:5000";
   static final ApiService service = ApiService();
 
   Future<Map<String, bool>> getSettings() async {
@@ -21,9 +22,63 @@ class ApiService {
     List baseInfoJson = jsonDecode(baseInfoResponse.body);
     return List.generate(
         baseInfoJson.length, (index) => Poll.fromJson(baseInfoJson[index]));
+    return a;
   }
 
-  Future<bool> loadResult(int poll_id) async {
+  Future<Poll?> getPoll(int id) async {
+    http.Response baseInfoResponse = await http
+        .get(Uri.parse("$serverURL/api/user/poll?id=$id"))
+        .timeout(const Duration(seconds: 3), onTimeout: () {
+      throw APIError("Превышено время ожидания ответа сервера");
+    });
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    if (baseInfoResponse.statusCode != 200) {
+      throw APIError(baseInfoJson["message"]);
+    }
+    print(baseInfoJson);
+    var a = Poll.fromJson(baseInfoJson);
+    print(a);
+    return a;
+  }
+
+  Future<Map?> getHistory(int id) async {
+    http.Response baseInfoResponse = await http
+        .get(Uri.parse(
+            "$serverURL/api/user/history?poll_id=$id&user_id=${TelegramWebApp.instance.initData.user.id}"))
+        .timeout(const Duration(seconds: 3), onTimeout: () {
+      throw APIError("Превышено время ожидания ответа сервера");
+    });
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    if (baseInfoResponse.statusCode != 200) {
+      throw APIError(baseInfoJson["message"]);
+    }
+    print(baseInfoJson);
+    return baseInfoJson;
+  }
+
+  Future<Poll?> getRandomPoll(int previousId) async {
+    http.Response baseInfoResponse = await http
+        .get(Uri.parse(
+            "$serverURL/api/user/swipe?poll_id=$previousId&user_id=${TelegramWebApp.instance.initData.user.id}"))
+        .timeout(const Duration(seconds: 3), onTimeout: () {
+      throw APIError("Превышено время ожидания ответа сервера");
+    });
+    print(baseInfoResponse.request!.url);
+    Map baseInfoJson = jsonDecode(baseInfoResponse.body);
+    if (baseInfoResponse.statusCode != 200) {
+      throw APIError(baseInfoJson["message"]);
+    }
+    print(baseInfoJson);
+    var a = Poll.fromJson(baseInfoJson);
+    print(a);
+    return a;
+  }
+
+  Future<bool> loadResult(
+      int pollId, Map<String, int?> questions, bool finalQuestion) async {
+    List<String> keys = questions.keys.toList();
     Map body = {
       "user_id": TelegramWebApp.instance.initData.user.id.toString(),
       "poll_id": poll_id,

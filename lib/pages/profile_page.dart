@@ -5,6 +5,8 @@ import 'package:t_polls_app/widgets/custom_card.dart';
 import 'package:t_polls_app/widgets/profile_button.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 
+import '../api/api_service.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.refreshParent});
 
@@ -15,8 +17,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Future? count;
+
+  void fetch() {
+    count = ApiService.service.getCompletedCount();
+  }
+
   @override
   Widget build(BuildContext context) {
+    fetch();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Профиль"),
@@ -45,14 +54,25 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Expanded(
                 child: CustomCard(
-                  title: Text(
+                  title: const Text(
                     "Опросов пройдено:",
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  content: Text(
-                    "52",
-                    style: Theme.of(context).textTheme.titleLarge,
+                  content: Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: FutureBuilder(
+                        future: count,
+                        builder: (context, snapshot) {
+                          return Text(
+                            snapshot.hasData ? snapshot.data.toString() : "-",
+                            style: const TextStyle(
+                              fontSize: 24,
+                            ),
+                          );
+                        }),
                   ),
                   height: 160,
                 ),
@@ -61,7 +81,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("История"),
+              title: const Text(
+                "История",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.history,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -71,7 +96,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("Настройки"),
+              title: const Text(
+                "Настройки",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.settings,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -83,7 +113,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Expanded(
             child: ProfileButtonWidget(
-              title: const Text("Тех. поддержка"),
+              title: const Text(
+                "Тех. поддержка",
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
               icon: Icons.support,
               onTap: () {},
             ),
