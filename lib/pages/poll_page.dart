@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/main_page.dart';
+import 'package:t_polls_app/types/exceptions.dart';
 import 'package:t_polls_app/types/poll.dart';
+import 'package:t_polls_app/widgets/exception_dialog.dart';
 import 'package:t_polls_app/widgets/question_card.dart';
 import 'package:telegram_web_app/telegram_web_app.dart';
 
@@ -31,41 +33,52 @@ class _PollPageState extends State<PollPage> {
         _questionController.finalQuestion ?? false);
     TelegramWebApp.instance.mainButton.hide();
 
-    res.then((bool val) {
-      return val
-          ? showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text("Спасибо за прохождение опроса!"),
-                    actions: [
-                      TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainPage()),
-                                  (r) => false),
-                          child: const Text("ОК"))
-                    ],
-                  ))
-          : showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text("Что-то пошло не так..."),
-                    content:
-                        const Text("Попробуйте снова через несколько минут"),
-                    actions: [
-                      TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainPage()),
-                                  (r) => false),
-                          child: const Text("ОК"))
-                    ],
-                  ));
-    });
+    res.then(
+      (bool val) {
+        return val
+            ? showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: const Text("Спасибо за прохождение опроса!"),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.of(context)
+                                .pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => const MainPage()),
+                                    (r) => false),
+                            child: const Text("ОК"))
+                      ],
+                    ))
+            : showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Что-то пошло не так..."),
+                  content: const Text("Попробуйте снова через несколько минут"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.of(context)
+                            .pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => const MainPage()),
+                                (r) => false),
+                        child: const Text("ОК"))
+                  ],
+                ),
+              );
+      },
+    ).onError(
+      (APIError e, _) {
+        showDialog(
+            context: context,
+            builder: (context) => ExceptionDialog(
+                  e: e,
+                  doublePop: true,
+                ));
+      },
+    );
   }
 
   @override

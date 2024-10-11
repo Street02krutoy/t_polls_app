@@ -44,6 +44,35 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             );
           }
+          if (snapshot.hasError) {
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Theme.of(context).cardColor,
+                  ),
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Произошла ошибка: ${snapshot.error}",
+                        style: const TextStyle(fontSize: 28),
+                        textAlign: TextAlign.center,
+                      ),
+                      IconButton(onPressed: () {
+                        setState(() {
+                          fetch();
+                        });
+                      }, icon: Icon(Icons.refresh)),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
           return const Center(
             child: CircularProgressIndicator(),
           );

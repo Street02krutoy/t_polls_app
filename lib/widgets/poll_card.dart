@@ -3,7 +3,9 @@ import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/main.dart';
 import 'package:t_polls_app/pages/poll_page.dart';
 import 'package:t_polls_app/pages/swipe_page.dart';
+import 'package:t_polls_app/types/exceptions.dart';
 import 'package:t_polls_app/types/poll.dart';
+import 'package:t_polls_app/widgets/exception_dialog.dart';
 
 class PollCardWidget extends StatelessWidget {
   const PollCardWidget({super.key, required this.poll});
@@ -30,7 +32,10 @@ class PollCardWidget extends StatelessWidget {
               ),
             );
           },
-        );
+        ).onError((APIError e, _) {
+          showDialog(
+              context: context, builder: (context) => ExceptionDialog(e: e));
+        });
       },
       child: Card(
         child: Padding(
@@ -53,7 +58,7 @@ class PollCardWidget extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text("OK"))
+                                    child: Text("Закрыть"))
                               ],
                             );
                           });

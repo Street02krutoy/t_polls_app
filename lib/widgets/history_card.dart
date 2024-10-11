@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:t_polls_app/api/api_service.dart';
 import 'package:t_polls_app/pages/poll_page.dart';
+import 'package:t_polls_app/types/exceptions.dart';
 import 'package:t_polls_app/types/poll.dart';
+import 'package:t_polls_app/widgets/exception_dialog.dart';
 
 class HistoryCard extends StatelessWidget {
   const HistoryCard({super.key, required this.poll});
@@ -24,6 +26,9 @@ class HistoryCard extends StatelessWidget {
               ),
             ),
           );
+        }).onError((APIError e, _) {
+          showDialog(
+              context: context, builder: (context) => ExceptionDialog(e: e));
         });
       },
       child: Card(
@@ -47,7 +52,7 @@ class HistoryCard extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text("OK"))
+                                    child: Text("Закрыть"))
                               ],
                             );
                           });

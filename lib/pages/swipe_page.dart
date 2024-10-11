@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import 'package:appinio_swiper/appinio_swiper.dart';
 import "package:t_polls_app/api/api_service.dart";
+import "package:t_polls_app/types/exceptions.dart";
 import "package:t_polls_app/widgets/custom_appbar.dart";
+import "package:t_polls_app/widgets/exception_dialog.dart";
 import "../types/poll.dart";
 import "main_page.dart";
 
@@ -125,6 +127,13 @@ class _SwipePageState extends State<SwipePage> {
                   ],
                 ),
               );
+            }).onError((APIError e, _) {
+              showDialog(
+                  context: context,
+                  builder: (context) => ExceptionDialog(
+                        e: e,
+                        doublePop: true,
+                      ));
             });
           }
         },
